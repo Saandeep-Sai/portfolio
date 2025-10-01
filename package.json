@@ -1,0 +1,39 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "backend": "cd backend && npm run dev",
+    "backend:start": "cd backend && npm start",
+    "backend:seed": "cd backend && npm run seed",
+    "backend:admin": "cd backend && npm run create-admin",
+    "install:all": "npm install && cd backend && npm install",
+    "dev:all": "concurrently \"npm run dev\" \"npm run backend\"",
+    "build:all": "npm run build && cd backend && npm install --production"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io-client": "^4.7.4",
+    "axios": "^1.6.2",
+    "react-hot-toast": "^2.4.1",
+    "framer-motion": "^10.16.16",
+    "react-intersection-observer": "^9.5.3"
+  },
+  "devDependencies": {
+    "@types/css-modules": "^1.0.5",
+    "@types/next": "^8.0.7",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "^15.0.0",
+    "typescript": "^5",
+    "concurrently": "^8.2.2"
+  }
+}
