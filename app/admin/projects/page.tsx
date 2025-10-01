@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 export default function ProjectsAdmin() {
   const [projects, setProjects] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
+  const [editingProject, setEditingProject] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -30,7 +30,8 @@ export default function ProjectsAdmin() {
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/projects', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${backendUrl}/api/projects`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -51,9 +52,10 @@ export default function ProjectsAdmin() {
         technologies: formData.technologies.split(',').map(t => t.trim())
       };
 
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
       const url = editingProject 
-        ? `http://localhost:5000/api/projects/${editingProject.id}`
-        : 'http://localhost:5000/api/projects';
+        ? `${backendUrl}/api/projects/${editingProject.id}`
+        : `${backendUrl}/api/projects`;
       
       const method = editingProject ? 'PUT' : 'POST';
 
@@ -97,7 +99,8 @@ export default function ProjectsAdmin() {
     
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${backendUrl}/api/projects/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
