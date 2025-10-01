@@ -133,7 +133,8 @@ export default function Home() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${backendUrl}/api/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data.slice(0, 6)); // Show only first 6 projects on homepage
@@ -248,7 +249,8 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const response = await fetch(`${backendUrl}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
