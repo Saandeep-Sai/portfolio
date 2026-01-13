@@ -133,7 +133,7 @@ export default function Home() {
 
   const fetchProjects = async () => {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://portfolio-backend-c7ib.onrender.com";
       const response = await fetch(`${backendUrl}/api/projects`);
       if (response.ok) {
         const data = await response.json();
@@ -249,7 +249,7 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://portfolio-backend-c7ib.onrender.com";
       const response = await fetch(`${backendUrl}/api/contact`, {
         method: "POST",
         headers: {

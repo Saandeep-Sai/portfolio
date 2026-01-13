@@ -28,7 +28,7 @@ export default function AchievementsAdmin() {
   const fetchAchievements = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/admin/achievements', {
+      const response = await fetch('https://portfolio-backend-c7ib.onrender.com/api/admin/achievements', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -44,7 +44,7 @@ export default function AchievementsAdmin() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/admin/achievements', {
+      const response = await fetch('https://portfolio-backend-c7ib.onrender.com/api/admin/achievements', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

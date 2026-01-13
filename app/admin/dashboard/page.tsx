@@ -21,10 +21,10 @@ export default function AdminDashboard() {
     try {
       const token = localStorage.getItem('adminToken');
       const [analyticsRes, projectsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/analytics/dashboard', {
+        fetch('https://portfolio-backend-c7ib.onrender.com/api/analytics/dashboard', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('http://localhost:5000/api/projects', {
+        fetch('https://portfolio-backend-c7ib.onrender.com/api/projects', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
