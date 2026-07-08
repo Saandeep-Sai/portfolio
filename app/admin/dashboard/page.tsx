@@ -22,7 +22,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('adminToken');
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const [analyticsRes, projectsRes] = await Promise.all([
-        fetch(`${backenUrl}/api/analytics/dashboard`, {
+        fetch(`${backendUrl}/api/analytics/dashboard`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         fetch(`${backendUrl}/api/projects`, {
