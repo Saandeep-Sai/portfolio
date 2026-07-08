@@ -24,7 +24,8 @@ export default function AnalyticsAdmin() {
   const fetchAnalytics = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('https://portfolio-backend-c7ib.onrender.com/api/analytics/dashboard', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/analytics/dashboard`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
