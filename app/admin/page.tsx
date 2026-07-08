@@ -21,7 +21,8 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    
       const response = await fetch(`${backendUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
