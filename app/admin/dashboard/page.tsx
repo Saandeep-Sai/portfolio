@@ -20,8 +20,9 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('adminToken');
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const [analyticsRes, projectsRes] = await Promise.all([
-        fetch('https://portfolio-backend-c7ib.onrender.com/api/analytics/dashboard', {
+        fetch(`${backenUrl}/api/analytics/dashboard', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         fetch('https://portfolio-backend-c7ib.onrender.com/api/projects', {
