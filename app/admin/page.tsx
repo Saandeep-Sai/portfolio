@@ -21,7 +21,8 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const response = await fetch('https://portfolio-backend-c7ib.onrender.com/api/admin/login', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+      const response = await fetch(`${backendUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
