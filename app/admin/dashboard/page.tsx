@@ -25,7 +25,7 @@ export default function AdminDashboard() {
         fetch(`${backenUrl}/api/analytics/dashboard', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('https://portfolio-backend-c7ib.onrender.com/api/projects', {
+        fetch(1${backendUrl}/api/projects', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
