@@ -28,7 +28,7 @@ export default function AchievementsAdmin() {
   const fetchAchievements = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/admin/achievements`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
