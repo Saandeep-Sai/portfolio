@@ -15,7 +15,8 @@ export default function Contact() {
     setSubmitStatus('');
 
     try {
-      const response = await fetch('https://portfolio-backend-c7ib.onrender.com/api/contact', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
