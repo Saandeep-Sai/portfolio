@@ -1,9 +1,16 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "./components/Navbar";
 import Analytics from "./components/Analytics";
 import Chatbot from "./components/Chatbot";
 import ProjectCard from "./components/ProjectCard";
+import { API_BASE } from "./lib/api";
+
+const CompanionBot = dynamic(() => import('./components/CompanionBot'), {
+  ssr: false,
+  loading: () => null
+});
 
 interface Project {
   id: string;
@@ -21,7 +28,7 @@ interface Project {
 }
 
 export default function Home() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,10 +39,17 @@ export default function Home() {
   const [showCursor, setShowCursor] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
   const [portfolioFilter, setPortfolioFilter] = useState("all");
+  const [siteStats, setSiteStats] = useState({
+    githubStars: 2, githubRepos: 34, certifications: 1, clients: 0, deployed: 6, hackathons: 3
+  });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
+    // Dark mode is default — only switch to light if explicitly saved
+    if (savedTheme === "light") {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    } else {
       setIsDarkMode(true);
       document.documentElement.classList.add("dark");
     }
@@ -43,8 +57,11 @@ export default function Home() {
     // Fetch projects from Firebase
     fetchProjects();
 
+    // Fetch live stats from backend
+    fetchSiteStats();
+
     // Typing animation
-    const fullText = "I'm Saandeep Sai,<br />AI + Backend Developer";
+    const fullText = "I'm Saandeep Sai,<br />AI Engineer & Backend Developer";
     let currentIndex = 0;
 
     const typeText = () => {
@@ -133,8 +150,7 @@ export default function Home() {
 
   const fetchProjects = async () => {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://portfolio-backend-c7ib.onrender.com";
-      const response = await fetch(`${backendUrl}/api/projects`);
+      const response = await fetch(`${API_BASE}/api/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data.slice(0, 6)); // Show only first 6 projects on homepage
@@ -176,6 +192,26 @@ export default function Home() {
           featured: true
         }
       ]);
+    }
+  };
+
+  const fetchSiteStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/stats`);
+      if (response.ok) {
+        const data = await response.json();
+        setSiteStats({
+          githubStars: data.githubStars || 2,
+          githubRepos: data.githubRepos || 34,
+          certifications: data.certifications || 1,
+          clients: data.clients || 0,
+          deployed: data.deployed || 6,
+          hackathons: data.hackathons || 3,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch site stats:", error);
+      // Keep defaults on error
     }
   };
 
@@ -249,8 +285,7 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://portfolio-backend-c7ib.onrender.com";
-      const response = await fetch(`${backendUrl}/api/contact`, {
+      const response = await fetch(`${API_BASE}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -275,6 +310,7 @@ export default function Home() {
     <>
       <Analytics />
       <Chatbot />
+      <CompanionBot />
       <div className="scroll-progress" id="scroll-progress"></div>
       <main className="fade-in" suppressHydrationWarning>
         <Navbar />
@@ -380,23 +416,25 @@ export default function Home() {
             <div
               style={{
                 position: "absolute",
-                top: "70px",
+                top: "50px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 textAlign: "center",
-                zIndex: 10,
+                zIndex: 25,
                 width: "100%",
+                pointerEvents: "none",
               }}
             >
               <h1
                 style={{
-                  fontSize: "4.5rem",
+                  fontSize: "3.5rem",
                   fontWeight: "800",
-                  lineHeight: "0.9",
+                  lineHeight: "1.1",
                   margin: 0,
                   color: "var(--text-primary)",
                   letterSpacing: "-0.02em",
-                  minHeight: "200px",
+                  minHeight: "160px",
+                  textShadow: "0 2px 20px rgba(0,0,0,0.5)",
                 }}
               >
                 <span
@@ -405,10 +443,6 @@ export default function Home() {
                       .replace(
                         /(Saandeep Sai)/g,
                         '<span style="color: var(--accent)">$1</span>'
-                      )
-                      .replace(
-                        /(AI Developer)/g,
-                        '<span style="font-size: 4rem; color: var(--text-primary)">$1</span>'
                       ),
                   }}
                 />
@@ -420,6 +454,7 @@ export default function Home() {
 
             {/* Left Quote Section */}
             <div
+              className="hero-side-stat"
               style={{
                 position: "absolute",
                 top: "280px",
@@ -455,6 +490,7 @@ export default function Home() {
 
             {/* Left Bottom Stats */}
             <div
+              className="hero-side-stat"
               style={{
                 position: "absolute",
                 bottom: "80px",
@@ -487,6 +523,7 @@ export default function Home() {
 
             {/* Right Top Stats */}
             <div
+              className="hero-side-stat"
               style={{
                 position: "absolute",
                 top: "300px",
@@ -617,10 +654,81 @@ export default function Home() {
           </div>
         </section>
 
+        {/* GitHub Stats & Certifications — Moved to top per guide feedback */}
+        <section className="stats-section animate-on-scroll">
+          <div className="container">
+            <div className="stats-grid">
+              <div className="stat-card slide-in-up delay-1">
+                <div className="stat-icon">🚀</div>
+                <div className="stat-counter" data-target={15}>
+                  0
+                </div>
+                <p>Projects Built</p>
+              </div>
+              <div className="stat-card slide-in-up delay-2">
+                <div className="stat-icon">💻</div>
+                <div className="stat-counter" data-target={siteStats.githubRepos || 34}>
+                  0
+                </div>
+                <p>GitHub Repos</p>
+              </div>
+              <div className="stat-card slide-in-up delay-3">
+                <div className="stat-icon">🏆</div>
+                <div className="stat-counter" data-target={siteStats.hackathons || 3}>
+                  0
+                </div>
+                <p>Hackathon Wins</p>
+              </div>
+              <div className="stat-card slide-in-up delay-4">
+                <div className="stat-icon">⭐</div>
+                <div className="stat-counter" data-target={siteStats.githubStars}>
+                  0
+                </div>
+                <p>GitHub Stars</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Profile Summary */}
+        <section className="animate-on-scroll" style={{
+          padding: '60px 0',
+          background: 'var(--bg-secondary)',
+        }}>
+          <div className="container" style={{ maxWidth: '900px', textAlign: 'center' }}>
+            <h2 className="slide-in-up" style={{ marginBottom: '1.5rem' }}>About Me</h2>
+            <p className="slide-in-up delay-1" style={{
+              fontSize: '1.15rem',
+              lineHeight: '1.8',
+              color: 'var(--text-secondary)',
+              marginBottom: '1.5rem',
+            }}>
+              AI Engineer with a strong foundation in Python, Machine Learning, and Generative AI.
+              Experienced in building practical AI solutions using LLMs, RAG pipelines, and deep learning models.
+              Passionate about creating scalable AI products, automating business processes, and solving
+              real-world problems that create measurable business value.
+            </p>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(255, 107, 53, 0.1)',
+              border: '1.5px solid var(--accent)',
+              borderRadius: '30px',
+              padding: '10px 24px',
+              color: 'var(--accent)',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+            }}>
+              🎯 Targeting: AI Engineer | ML Engineer | Backend Developer roles
+            </div>
+          </div>
+        </section>
+
         {/* Services Section */}
         <section className="services animate-on-scroll">
           <div className="container">
-            <h2 className="slide-in-up">My Services</h2>
+            <h2 className="slide-in-up">My Skills</h2>
             <p className="services-intro slide-in-up delay-1">
               Specialized in creating intelligent solutions that combine
               cutting-edge AI with robust backend architecture.
@@ -657,7 +765,7 @@ export default function Home() {
         {/* Experience Section */}
         <section className="experience animate-on-scroll">
           <div className="container">
-            <h2 className="slide-in-up">My Achievements</h2>
+            <h2 className="slide-in-up">My Accomplishments</h2>
 
             <div className="experience-item slide-in-left delay-1">
               <div className="experience-date">
@@ -708,6 +816,33 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Freelance Experience */}
+        <section className="experience animate-on-scroll">
+          <div className="container">
+            <h2 className="slide-in-up">Experience</h2>
+            <div className="experience-item slide-in-left delay-1">
+              <div className="experience-date">
+                <h4>Freelance</h4>
+                <p>2024 - Present</p>
+              </div>
+              <div className="experience-dot pulse-dot"></div>
+              <div className="experience-content">
+                <h3>AI & Backend Developer</h3>
+                <p>
+                  Building AI-powered web applications, REST APIs, and automation
+                  tools for clients. Delivered projects integrating machine learning
+                  models, generative AI (Gemini, LLMs), and full-stack solutions.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.5rem' }}>
+                  {['Python', 'Next.js', 'Express', 'Firebase', 'Gemini API'].map((t, i) => (
+                    <span key={i} className="tech-tag" style={{ background: 'rgba(255,107,53,0.15)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="cta-section animate-on-scroll">
           <div className="container">
@@ -717,8 +852,7 @@ export default function Home() {
               </div>
               <div className="cta-text">
                 <h2>
-                  Why You <span className="highlight">Hire Me</span> For Your
-                  Next Project?
+                  Why You <span className="highlight">Hire Me</span>?
                 </h2>
                 <p>
                   I bring innovative AI solutions and robust backend development
@@ -900,95 +1034,63 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Skills with Progress Bars */}
+        {/* Technical Skills — Categorized Tags */}
         <section className="skills-section animate-on-scroll">
           <div className="container">
             <h2 className="section-title slide-in-up">Technical Skills</h2>
-            <div className="skills-grid">
-              <div className="skill-item slide-in-left delay-1">
-                <div className="skill-header">
-                  <h3 className="skill-name">Python & AI</h3>
-                  <span className="skill-percentage">95%</span>
-                </div>
-                <div className="skill-bar-container">
-                  <div className="skill-progress" data-width="95"></div>
-                </div>
-              </div>
-              <div className="skill-item slide-in-left delay-2">
-                <div className="skill-header">
-                  <h3 className="skill-name">Backend Development</h3>
-                  <span className="skill-percentage">90%</span>
-                </div>
-                <div className="skill-bar-container">
-                  <div className="skill-progress" data-width="90"></div>
+            <div className="skills-categories">
+              <div className="skill-category slide-in-up delay-1">
+                <h4>💻 Programming</h4>
+                <div className="skill-tags">
+                  {['Python', 'JavaScript', 'TypeScript', 'SQL', 'Java'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
                 </div>
               </div>
-              <div className="skill-item slide-in-left delay-3">
-                <div className="skill-header">
-                  <h3 className="skill-name">Machine Learning</h3>
-                  <span className="skill-percentage">88%</span>
-                </div>
-                <div className="skill-bar-container">
-                  <div className="skill-progress" data-width="88"></div>
-                </div>
-              </div>
-              <div className="skill-item slide-in-left delay-4">
-                <div className="skill-header">
-                  <h3 className="skill-name">Full Stack Development</h3>
-                  <span className="skill-percentage">85%</span>
-                </div>
-                <div className="skill-bar-container">
-                  <div className="skill-progress" data-width="85"></div>
+              <div className="skill-category slide-in-up delay-2">
+                <h4>🤖 Machine Learning</h4>
+                <div className="skill-tags">
+                  {['Scikit-learn', 'TensorFlow', 'PyTorch', 'OpenCV', 'YOLO'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
                 </div>
               </div>
-              <div className="skill-item slide-in-left delay-5">
-                <div className="skill-header">
-                  <h3 className="skill-name">Cloud & DevOps</h3>
-                  <span className="skill-percentage">80%</span>
+              <div className="skill-category slide-in-up delay-3">
+                <h4>🧠 Generative AI / LLMs</h4>
+                <div className="skill-tags">
+                  {['Gemini API', 'LangChain', 'RAG', 'Prompt Engineering', 'Coqui TTS'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
                 </div>
-                <div className="skill-bar-container">
-                  <div className="skill-progress" data-width="80"></div>
+              </div>
+              <div className="skill-category slide-in-up delay-4">
+                <h4>🔧 Frameworks & Tools</h4>
+                <div className="skill-tags">
+                  {['Next.js', 'Express', 'Django', 'Flask', 'React', 'Git'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="skill-category slide-in-up delay-5">
+                <h4>📊 Data & Databases</h4>
+                <div className="skill-tags">
+                  {['Firebase', 'MongoDB', 'PostgreSQL', 'Pandas', 'NumPy'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="skill-category slide-in-up delay-5">
+                <h4>☁️ Cloud & Deployment</h4>
+                <div className="skill-tags">
+                  {['Vercel', 'Render', 'Docker', 'AWS', 'GCP'].map((s, i) => (
+                    <span key={i} className="skill-pill">{s}</span>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* GitHub Stats & Certifications */}
-        <section className="stats-section animate-on-scroll">
-          <div className="container">
-            <div className="stats-grid">
-              <div className="stat-card slide-in-up delay-1">
-                <div className="stat-icon">🏆</div>
-                <div className="stat-counter" data-target="15">
-                  0
-                </div>
-                <p>Certifications</p>
-              </div>
-              <div className="stat-card slide-in-up delay-2">
-                <div className="stat-icon">⭐</div>
-                <div className="stat-counter" data-target="500">
-                  0
-                </div>
-                <p>GitHub Stars</p>
-              </div>
-              <div className="stat-card slide-in-up delay-3">
-                <div className="stat-icon">🚀</div>
-                <div className="stat-counter" data-target="25">
-                  0
-                </div>
-                <p>Projects Deployed</p>
-              </div>
-              <div className="stat-card slide-in-up delay-4">
-                <div className="stat-icon">👥</div>
-                <div className="stat-counter" data-target="50">
-                  0
-                </div>
-                <p>Happy Clients</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Blog Section */}
         <section className="blog-section animate-on-scroll">
@@ -1076,7 +1178,7 @@ export default function Home() {
                 color: "var(--text-primary)",
               }}
             >
-              Achievement Journey
+              Accomplishment Journey
             </h2>
 
             {/* Road Path */}

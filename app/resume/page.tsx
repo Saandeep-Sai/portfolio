@@ -21,7 +21,7 @@ export default function Resume() {
               Saandeep Sai <span className="name-highlight">Turpu</span>
             </h1>
             <p className="slide-in-up delay-2" style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', textAlign: 'center' }}>
-              Computer Science Student | AI Developer | Full-Stack Engineer
+              Computer Science Student | AI Engineer | Backend Developer
             </p>
             <div className="hero-actions" style={{ justifyContent: 'center', marginTop: '2rem' }}>
               <a href="/images/Saandeep_Sai_s_resume (1).pdf" download="Saandeep_Sai_Resume.pdf" className="btn btn-primary">
@@ -30,6 +30,24 @@ export default function Resume() {
               <a href="mailto:saandeepsaiturpu@gmail.com" className="btn btn-outline">
                 📧 Contact Me
               </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Experience Section */}
+      <section className="experience animate-on-scroll">
+        <div className="container">
+          <h2>Experience</h2>
+          <div className="experience-item slide-in-up delay-1">
+            <div className="experience-date">
+              <h4>2024 - Present</h4>
+              <p>Freelance</p>
+            </div>
+            <div className="experience-dot"></div>
+            <div className="experience-content">
+              <h3>Freelance AI & Backend Developer</h3>
+              <p>Building AI-powered web applications, REST APIs, and automation tools for clients. Delivered projects integrating machine learning models, generative AI (Gemini, LLMs), and full-stack solutions using Python, Next.js, Express, and Firebase.</p>
             </div>
           </div>
         </div>
@@ -46,8 +64,8 @@ export default function Resume() {
             </div>
             <div className="experience-dot"></div>
             <div className="experience-content">
-              <h3>B.Tech in Computer Science</h3>
-              <p>Currently pursuing Bachelor of Technology with a focus on AI and software development. Maintaining a strong academic record with <strong>CPI: 8.8/10</strong>.</p>
+              <h3>B.Tech in Computer Science — Sri Indu College of Engineering and Technology</h3>
+              <p>Currently pursuing Bachelor of Technology at <strong>Sri Indu College of Engineering and Technology</strong> with a focus on AI and software development. Maintaining a strong academic record with <strong>CPI: 8.8/10</strong>.</p>
             </div>
           </div>
           <div className="experience-item slide-in-up delay-2">
@@ -57,8 +75,8 @@ export default function Resume() {
             </div>
             <div className="experience-dot"></div>
             <div className="experience-content">
-              <h3>Associate of Science in AI</h3>
-              <p>Specialized program focusing on artificial intelligence, machine learning, and data science applications.</p>
+              <h3>Associate of Science in AI — Saras AI Institute</h3>
+              <p>Specialized program at <strong>Saras AI Institute</strong> focusing on artificial intelligence, machine learning, and data science applications.</p>
             </div>
           </div>
         </div>
@@ -106,7 +124,7 @@ export default function Resume() {
       {/* Achievement Road */}
       <section className="animate-on-scroll" style={{ padding: '100px 0', background: 'var(--bg-secondary)', position: 'relative', overflow: 'hidden' }}>
         <div className="container">
-          <h2 style={{ textAlign: 'center', marginBottom: '4rem', color: 'var(--text-primary)' }}>Achievement Journey</h2>
+          <h2 style={{ textAlign: 'center', marginBottom: '4rem', color: 'var(--text-primary)' }}>Accomplishment Journey</h2>
           
           <div style={{ position: 'relative', maxWidth: '1000px', margin: '0 auto' }}>
             <div style={{

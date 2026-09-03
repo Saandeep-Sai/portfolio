@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { API_BASE } from '../../lib/api';
 
 export async function POST(request: NextRequest) {
   try {
     const { message } = await request.json();
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://portfolio-backend-c7ib.onrender.com';
-    const response = await fetch(`${backendUrl}/api/chatbot`, {
+    const response = await fetch(`${API_BASE}/api/chatbot`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

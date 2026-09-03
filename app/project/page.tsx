@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import ProjectCard from "../components/ProjectCard";
 import { useScrollAnimation } from "../components/useScrollAnimation";
-import { text } from "stream/consumers";
+import { API_BASE } from "../lib/api";
 
 interface Project {
   id: string;
@@ -25,9 +26,7 @@ export default function Project() {
 
   const [filter, setFilter] = useState("all");
   const [projects, setProjects] = useState<Project[]>([]);
-
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     fetchProjects();
@@ -35,8 +34,7 @@ export default function Project() {
 
   const fetchProjects = async () => {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://portfolio-backend-c7ib.onrender.com";
-      const response = await fetch(`${backendUrl}/api/projects`);
+      const response = await fetch(`${API_BASE}/api/projects`);
       if (response.ok) {
         const data = await response.json();
         setProjects(data);
@@ -61,7 +59,8 @@ export default function Project() {
           if (filter === "fullstack") {
             return (
               project.category.toLowerCase().includes("full stack") ||
-              project.category.toLowerCase().includes("fullstack")
+              project.category.toLowerCase().includes("fullstack") ||
+              project.category.toLowerCase().includes("web")
             );
           }
           if (filter === "python") {
@@ -76,10 +75,8 @@ export default function Project() {
           return project.category === filter;
         })
   ).sort((a, b) => {
-    // Projects with live demo come first
     const aHasLiveDemo = a.liveUrl && a.liveUrl !== "#" && a.liveUrl !== "";
     const bHasLiveDemo = b.liveUrl && b.liveUrl !== "#" && b.liveUrl !== "";
-
     if (aHasLiveDemo && !bHasLiveDemo) return -1;
     if (!aHasLiveDemo && bHasLiveDemo) return 1;
     return 0;
@@ -132,57 +129,7 @@ export default function Project() {
         <div className="container">
           <div className="projects-grid">
             {filteredProjects.map((project) => (
-              <div key={project.id} className="project-card">
-                <div className="card-inner">
-                  <div className="card-front">
-                    <img src={project.image} alt={project.title} />
-                    <div className="card-content">
-                      <h3>{project.title}</h3>
-                      <p className="project-type">{project.type}</p>
-                    </div>
-                  </div>
-                  <div className="card-back">
-                    <div className="card-back-content">
-                      <h3>{project.title}</h3>
-                      <p className="project-description">
-                        {project.description}
-                      </p>
-                      <div className="technologies-stack">
-                        {project.technologies?.map(
-                          (tech: string, index: number) => (
-                            <span key={index} className="tech-tag">
-                              {tech}
-                            </span>
-                          )
-                        )}
-                      </div>
-                      <div className="project-links">
-                        {project.liveUrl &&
-                          project.liveUrl !== "#" &&
-                          project.liveUrl !== "" && (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn btn-sm btn-primary "
-                            >
-                              Live Demo
-                            </a>
-                          )}
-
-                        {project.githubUrl !== "#" && (
-                          <a
-                            href={project.githubUrl}
-                            className="btn btn-sm btn-secondary"
-                          >
-                            GitHub
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         </div>

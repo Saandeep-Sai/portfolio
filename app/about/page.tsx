@@ -1,11 +1,42 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import ProjectCard from "../components/ProjectCard";
 import { useScrollAnimation } from "../components/useScrollAnimation";
+import { API_BASE } from "../lib/api";
+
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  type: string;
+  description: string;
+  technologies: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+  image: string;
+  featured?: boolean;
+}
 
 export default function About() {
   useScrollAnimation();
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/projects`);
+        if (response.ok) {
+          const data = await response.json();
+          const featured = data.filter((p: Project) => p.featured);
+          setFeaturedProjects(featured.length > 0 ? featured.slice(0, 6) : data.slice(0, 6));
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    };
+    fetchProjects();
+  }, []);
   return (
     <main className="fade-in">
       <Navbar />
@@ -57,6 +88,42 @@ export default function About() {
               AI-powered, scalable tools that transform education and media
               experiences.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Education Section */}
+      <section className="experience animate-on-scroll">
+        <div className="container">
+          <h2>Education</h2>
+          <div className="experience-item slide-in-up delay-1">
+            <div className="experience-date">
+              <h4>2022 - 2026</h4>
+              <p>Present</p>
+            </div>
+            <div className="experience-dot"></div>
+            <div className="experience-content">
+              <h3>B.Tech in Computer Science — Sri Indu College of Engineering and Technology</h3>
+              <p>
+                Currently pursuing Bachelor of Technology at <strong>Sri Indu College of Engineering and Technology</strong> with a focus on AI and
+                software development. Maintaining a strong academic record with
+                CPI: 8.8/10.
+              </p>
+            </div>
+          </div>
+          <div className="experience-item slide-in-up delay-2">
+            <div className="experience-date">
+              <h4>2025 - Present</h4>
+              <p>Ongoing</p>
+            </div>
+            <div className="experience-dot"></div>
+            <div className="experience-content">
+              <h3>Associate of Science in AI — Saras AI Institute</h3>
+              <p>
+                Specialized program at <strong>Saras AI Institute</strong> focusing on artificial intelligence, machine
+                learning, and data science applications.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -154,82 +221,10 @@ export default function About() {
               View All Projects
             </a>
           </div>
-          <div className="portfolio-grid">
-            <div className="portfolio-item hover-lift slide-in-left delay-1">
-              <img
-                src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=200&fit=crop"
-                alt="Item Retriever"
-              />
-              <div className="portfolio-content">
-                <div className="project-category">AI/Computer Vision</div>
-                <h3>Item Retriever</h3>
-                <p className="project-description">
-                  AI-powered system for intelligent item detection and retrieval
-                  using computer vision.
-                </p>
-                <div className="tech-stack">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">OpenCV</span>
-                  <span className="tech-tag">TensorFlow</span>
-                </div>
-              </div>
-            </div>
-            <div className="portfolio-item hover-lift slide-in-up delay-2">
-              <img
-                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop"
-                alt="VisionTalk"
-              />
-              <div className="portfolio-content">
-                <div className="project-category">AI/NLP</div>
-                <h3>VisionTalk</h3>
-                <p className="project-description">
-                  Advanced AI system combining computer vision with natural
-                  language processing.
-                </p>
-                <div className="tech-stack">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">NLP</span>
-                  <span className="tech-tag">Computer Vision</span>
-                </div>
-              </div>
-            </div>
-            <div className="portfolio-item hover-lift slide-in-right delay-3">
-              <img
-                src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop"
-                alt="Tune Genie"
-              />
-              <div className="portfolio-content">
-                <div className="project-category">AI/Audio</div>
-                <h3>Tune Genie</h3>
-                <p className="project-description">
-                  AI-powered music generation and voice cloning application.
-                </p>
-                <div className="tech-stack">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">Audio ML</span>
-                  <span className="tech-tag">Deep Learning</span>
-                </div>
-              </div>
-            </div>
-            <div className="portfolio-item hover-lift slide-in-left delay-4">
-              <img
-                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop"
-                alt="AI Tutor"
-              />
-              <div className="portfolio-content">
-                <div className="project-category">AI/Education</div>
-                <h3>Personalized AI Tutor</h3>
-                <p className="project-description">
-                  Intelligent tutoring system providing personalized learning
-                  experiences.
-                </p>
-                <div className="tech-stack">
-                  <span className="tech-tag">Python</span>
-                  <span className="tech-tag">Machine Learning</span>
-                  <span className="tech-tag">NLP</span>
-                </div>
-              </div>
-            </div>
+          <div className="projects-grid">
+            {featuredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
         </div>
       </section>
@@ -570,42 +565,6 @@ export default function About() {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Education Section */}
-      <section className="experience animate-on-scroll">
-        <div className="container">
-          <h2>Education</h2>
-          <div className="experience-item slide-in-up delay-1">
-            <div className="experience-date">
-              <h4>2022 - 2026</h4>
-              <p>Present</p>
-            </div>
-            <div className="experience-dot"></div>
-            <div className="experience-content">
-              <h3>B.Tech in Computer Science</h3>
-              <p>
-                Currently pursuing Bachelor of Technology with a focus on AI and
-                software development. Maintaining a strong academic record with
-                CPI: 8.8/10.
-              </p>
-            </div>
-          </div>
-          <div className="experience-item slide-in-up delay-2">
-            <div className="experience-date">
-              <h4>2025 - Present</h4>
-              <p>Ongoing</p>
-            </div>
-            <div className="experience-dot"></div>
-            <div className="experience-content">
-              <h3>Associate of Science in AI</h3>
-              <p>
-                Specialized program focusing on artificial intelligence, machine
-                learning, and data science applications.
-              </p>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '../../lib/api';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ pageViews: 0, contactForms: 0, projectClicks: 0 });
@@ -20,12 +21,11 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const [analyticsRes, projectsRes] = await Promise.all([
-        fetch(`${backendUrl}/api/analytics/dashboard`, {
+        fetch(`${API_BASE}/api/analytics/dashboard`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch(`${backendUrl}/api/projects`, {
+        fetch(`${API_BASE}/api/projects`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);

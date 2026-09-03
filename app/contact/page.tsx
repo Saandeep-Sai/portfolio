@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { API_BASE } from '../lib/api';
 import Navbar from '../components/Navbar';
 import { useScrollAnimation } from '../components/useScrollAnimation';
 
@@ -15,8 +16,7 @@ export default function Contact() {
     setSubmitStatus('');
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/contact`, {
+      const response = await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
